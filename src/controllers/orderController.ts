@@ -19,7 +19,7 @@ export const createOrder = async (
       res.status(400).json({ success: false, message: "Insufficient stock" });
       return;
     }
-    
+
     const order = new Order({
       email,
       productId,
@@ -48,19 +48,48 @@ export const createOrder = async (
 /* ================== Create a new order End ================== */
 
 /* ================== Retrieve All Orders Start ================== */
-export const getAllOrders = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+/**
+ export const getOrders = async (
+     req: Request,
+     res: Response
+    ): Promise<void> => {
+        try {
+            const orders = await Order.find();
+            res.status(200).json({
+                success: true,
+                message: "Orders fetched successfully!",
+                data: orders,
+            });
+        } catch (error) {
+            res.status(400).json({ success: false, message: (error as Error).message });
+        }
+    };
+*/
+/* ================== Retrieve All Orders End ================== */
+
+/* ================== Retrieve Orders by User Email Start ================== */
+export const getOrders = async (req: Request, res: Response): Promise<void> => {
   try {
-    const orders = await Order.find();
-    res.status(200).json({
-      success: true,
-      message: "Orders fetched successfully!",
-      data: orders,
-    });
+    const userEmail: string | undefined = req.query.email as string | undefined;
+    let orders;
+
+    if (userEmail) {
+      orders = await Order.find({ email: userEmail });
+      res.status(200).json({
+        success: true,
+        message: "Orders fetched successfully for user email!",
+        data: orders,
+      });
+    } else {
+      orders = await Order.find();
+      res.status(200).json({
+        success: true,
+        message: "Orders fetched successfully!",
+        data: orders,
+      });
+    }
   } catch (error) {
     res.status(400).json({ success: false, message: (error as Error).message });
   }
 };
-/* ================== Retrieve All Orders End ================== */
+/* ================== Retrieve Orders by User Email End ================== */
