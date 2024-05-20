@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
 import productRoutes from './routes/productRoutes';
+import orderRoutes from './routes/orderRoutes';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
