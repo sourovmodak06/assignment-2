@@ -19,3 +19,21 @@ export const createProduct = async (
   }
 };
 /* ================== Create a new product End ================== */
+
+/* ================== Retrieve a List of All Products Start ================== */
+export const getAllProducts = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const products = await Product.find();
+    res.status(200).json({
+      success: true,
+      message: "Products fetched successfully!",
+      data: products,
+    });
+  } catch (error: unknown) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+};
+/* ================== Retrieve a List of All Products End ================== */
