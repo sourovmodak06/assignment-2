@@ -46,3 +46,21 @@ export const createOrder = async (
   }
 };
 /* ================== Create a new order End ================== */
+
+/* ================== Retrieve All Orders Start ================== */
+export const getAllOrders = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const orders = await Order.find();
+    res.status(200).json({
+      success: true,
+      message: "Orders fetched successfully!",
+      data: orders,
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: (error as Error).message });
+  }
+};
+/* ================== Retrieve All Orders End ================== */
