@@ -88,3 +88,27 @@ export const updateProduct = async (
   }
 };
 /* ================== Update Product Information End ================== */
+
+/* ================== Delete a Product Start ================== */
+export const deleteProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.productId);
+    if (product) {
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "Product deleted successfully!",
+          data: null,
+        });
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error: unknown) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+};
+/* ================== Delete a Product End ================== */
