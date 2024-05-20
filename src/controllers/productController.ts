@@ -59,3 +59,32 @@ export const getProductById = async (
   }
 };
 /* ================== Retrieve a Specific Product by ID End ================== */
+
+/* ================== Update Product Information Start ================== */
+export const updateProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const product = await Product.findByIdAndUpdate(
+      req.params.productId,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (product) {
+      res.status(200).json({
+        success: true,
+        message: "Product updated successfully!",
+        data: product,
+      });
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error: unknown) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+};
+/* ================== Update Product Information End ================== */
