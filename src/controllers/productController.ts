@@ -21,21 +21,58 @@ export const createProduct = async (
 /* ================== Create a new product End ================== */
 
 /* ================== Retrieve a List of All Products Start ================== */
+/**
+ export const getAllProducts = async (
+   req: Request,
+   res: Response
+  ): Promise<void> => {
+    try {
+      const products = await Product.find();
+      res.status(200).json({
+        success: true,
+        message: "Products fetched successfully!",
+        data: products,
+      });
+    } catch (error: unknown) {
+      res.status(400).json({ message: (error as Error).message });
+    }
+  };
+ */
+
 export const getAllProducts = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const products = await Product.find();
+    const searchTerm: string = req.query.searchTerm as string;
+    let products;
+    if (searchTerm) {
+      products = await Product.find({
+        $or: [
+          { name: { $regex: searchTerm, $options: "i" } },
+          { description: { $regex: searchTerm, $options: "i" } },
+        ],
+      });
+      if (products.length === 0) {
+        res.status(404).json({
+          success: false,
+          message: `No products found matching search term '${searchTerm}'`,
+        });
+        return;
+      }
+    } else {
+      products = await Product.find();
+    }
     res.status(200).json({
       success: true,
-      message: "Products fetched successfully!",
+      message: `Products matching search term '${searchTerm}' fetched successfully!`,
       data: products,
     });
-  } catch (error: unknown) {
-    res.status(400).json({ message: (error as Error).message });
+  } catch (error) {
+    res.status(400).json({ success: false, message: (error as Error).message });
   }
 };
+
 /* ================== Retrieve a List of All Products End ================== */
 
 /* ================== Retrieve a Specific Product by ID Start ================== */
@@ -97,13 +134,11 @@ export const deleteProduct = async (
   try {
     const product = await Product.findByIdAndDelete(req.params.productId);
     if (product) {
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Product deleted successfully!",
-          data: null,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Product deleted successfully!",
+        data: null,
+      });
     } else {
       res.status(404).json({ message: "Product not found" });
     }
