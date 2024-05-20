@@ -37,3 +37,25 @@ export const getAllProducts = async (
   }
 };
 /* ================== Retrieve a List of All Products End ================== */
+
+/* ================== Retrieve a Specific Product by ID Start ================== */
+export const getProductById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    if (product) {
+      res.status(200).json({
+        success: true,
+        message: "Product fetched successfully!",
+        data: product,
+      });
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error: unknown) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+};
+/* ================== Retrieve a Specific Product by ID End ================== */
