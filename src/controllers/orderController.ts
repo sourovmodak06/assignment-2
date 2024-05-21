@@ -11,12 +11,12 @@ export const createOrder = async (
     const { email, productId, price, quantity } = req.body;
     const product = await Product.findById(productId);
     if (!product) {
-      res.status(404).json({ success: false, message: "Product not found" });
+      res.status(404).json({ success: false, message: "Order not found" });
       return;
     }
 
     if (product.inventory.quantity < quantity) {
-      res.status(400).json({ success: false, message: "Insufficient stock" });
+      res.status(400).json({ success: false, message: "Insufficient quantity available in inventory" });
       return;
     }
 
