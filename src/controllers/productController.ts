@@ -46,6 +46,7 @@ export const getAllProducts = async (
   try {
     const searchTerm: string = req.query.searchTerm as string;
     let products;
+    let message: string;
     if (searchTerm) {
       products = await Product.find({
         $or: [
@@ -53,6 +54,7 @@ export const getAllProducts = async (
           { description: { $regex: searchTerm, $options: "i" } },
         ],
       });
+      message = `Products matching search term '${searchTerm}' fetched successfully!`;
       if (products.length === 0) {
         res.status(404).json({
           success: false,
@@ -62,10 +64,11 @@ export const getAllProducts = async (
       }
     } else {
       products = await Product.find();
+      message = "Products fetched successfully!";
     }
     res.status(200).json({
       success: true,
-      message: `Products matching search term '${searchTerm}' fetched successfully!`,
+      message,
       data: products,
     });
   } catch (error) {
